@@ -1,29 +1,26 @@
 import React, { useContext, useState } from "react";
-import { useForm } from 'react-hook-form';
+import { useForm } from "react-hook-form";
 import { FaRegUser } from "react-icons/fa";
 import { MdOutlineMailOutline } from "react-icons/md";
 import { RiLock2Fill } from "react-icons/ri";
 import { FaPencilAlt } from "react-icons/fa";
 import { FaPhoneFlip } from "react-icons/fa6";
 import { Link, Navigate } from "react-router-dom";
-import axios from 'axios';
+import axios from "axios";
 import toast from "react-hot-toast";
 import { useMutation } from "@tanstack/react-query";
-
-
+import { doRegister } from "../../@apis/auth";
 
 const Register = () => {
   const { register, handleSubmit } = useForm();
 
   const userRegistered = useMutation({
-    mutationFn: (forData) => {
-      return axios.post("http://127.0.0.1:8000/api/user/register", forData);
-    },
+    mutationFn: doRegister,
   });
 
   const onSubmit = (data) => {
     try {
-       userRegistered.mutate(data);
+      userRegistered.mutate({ data });
       // Handle success, maybe redirect or show a success message
     } catch (error) {
       // Handle error
@@ -51,7 +48,7 @@ const Register = () => {
                 <FaRegUser />
               </div>
             </div>
-            <div className="inputTag" >
+            <div className="inputTag">
               <label>Name</label>
               <div>
                 <input
@@ -82,7 +79,7 @@ const Register = () => {
                   type="number"
                   placeholder="12345678"
                   id="phone"
-                {...register("phone")}
+                  {...register("phone")}
                 />
                 <FaPhoneFlip />
               </div>
@@ -99,9 +96,7 @@ const Register = () => {
                 <RiLock2Fill />
               </div>
             </div>
-            <button type="submit">
-              Register
-            </button>
+            <button type="submit">Register</button>
             <Link to={"/login"}>Login Now</Link>
           </form>
         </div>
