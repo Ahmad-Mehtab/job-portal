@@ -1,15 +1,35 @@
 import React, { useContext, useState } from "react";
+import { useForm } from 'react-hook-form';
 import { FaRegUser } from "react-icons/fa";
 import { MdOutlineMailOutline } from "react-icons/md";
 import { RiLock2Fill } from "react-icons/ri";
 import { FaPencilAlt } from "react-icons/fa";
 import { FaPhoneFlip } from "react-icons/fa6";
 import { Link, Navigate } from "react-router-dom";
-import axios from "axios";
+import axios from 'axios';
 import toast from "react-hot-toast";
+import { useMutation } from "@tanstack/react-query";
+
+
 
 const Register = () => {
+  const { register, handleSubmit } = useForm();
 
+  const userRegistered = useMutation({
+    mutationFn: (forData) => {
+      return axios.post("http://127.0.0.1:8000/api/user/register", forData);
+    },
+  });
+
+  const onSubmit = (data) => {
+    try {
+       userRegistered.mutate(data);
+      // Handle success, maybe redirect or show a success message
+    } catch (error) {
+      // Handle error
+      console.error(error);
+    }
+  };
 
   return (
     <>
@@ -19,26 +39,26 @@ const Register = () => {
             <img src="/jobportal.svg" alt="logo" />
             <h3>Create a new account</h3>
           </div>
-          <form>
+          <form onSubmit={handleSubmit(onSubmit)}>
             <div className="inputTag">
               <label>Register As</label>
               <div>
-                <select value="">
-                  <option value="">Select Role</option>
+                <select id="role" {...register("role")}>
+                  <option>Select Role</option>
                   <option value="Employer">Employer</option>
                   <option value="Job Seeker">Job Seeker</option>
                 </select>
                 <FaRegUser />
               </div>
             </div>
-            <div className="inputTag">
+            <div className="inputTag" >
               <label>Name</label>
               <div>
                 <input
                   type="text"
                   placeholder="ahmad"
-                  value=""
-                
+                  id="name"
+                  {...register("name")}
                 />
                 <FaPencilAlt />
               </div>
@@ -49,7 +69,8 @@ const Register = () => {
                 <input
                   type="email"
                   placeholder="ahmad@gmail.com"
-                  value=""
+                  id="email"
+                  {...register("email")}
                 />
                 <MdOutlineMailOutline />
               </div>
@@ -60,8 +81,8 @@ const Register = () => {
                 <input
                   type="number"
                   placeholder="12345678"
-                  value=""
-              
+                  id="phone"
+                {...register("phone")}
                 />
                 <FaPhoneFlip />
               </div>
@@ -72,8 +93,8 @@ const Register = () => {
                 <input
                   type="password"
                   placeholder="Your Password"
-                  value=""
-                  
+                  id="password"
+                  {...register("password")}
                 />
                 <RiLock2Fill />
               </div>

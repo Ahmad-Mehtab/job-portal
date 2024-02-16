@@ -9,9 +9,9 @@ const userSlice = createSlice({
   name: 'user',
   initialState,
   reducers: {
-    signInSuccess: (state, action) => {
+    userAuthorize: (state, action) => {
       state.currentUser = action.payload;
-      isAuthorized: true;
+      state.isAuthorized = true;
     }
   },
 });

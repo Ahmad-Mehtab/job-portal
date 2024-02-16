@@ -19,7 +19,7 @@ export const register = catchAsyncErrors(async (req, res, next) => {
     password,
     role,
   });
-  sendToken(user, 201, res, "User Registered!");
+  sendToken(user, 200, res, "User Registered!");
 });
 
 export const login = catchAsyncErrors(async (req, res, next) => {
@@ -39,8 +39,9 @@ export const login = catchAsyncErrors(async (req, res, next) => {
     return next(
       new ErrorHandler(`User with provided email and ${role} not found!`, 404)
     );
-  }
-  sendToken(user, 201, res, "User Logged In!");
+  } 
+  
+  sendToken(user, 200, res, "User Logged In!");
 });
 
 export const logout = catchAsyncErrors(async (req, res, next) => {

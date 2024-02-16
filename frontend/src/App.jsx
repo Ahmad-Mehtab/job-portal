@@ -15,12 +15,12 @@ import MyApplications from "./components/Application/MyApplications";
 import PostJob from "./components/Job/PostJob";
 import NotFound from "./components/NotFound/NotFound";
 import MyJobs from "./components/Job/MyJobs";
-import { useDispatch, useSelector } from "react-redux";
+// import { useDispatch, useSelector } from "react-redux";
 
 const App = () => {
 
-  const dispatch = useDispatch()
-  const {loading} = useSelector((state) => state.user)
+  // const dispatch = useDispatch()
+  // const {loading} = useSelector((state) => state.user)
   return (
     <>
       <BrowserRouter>
