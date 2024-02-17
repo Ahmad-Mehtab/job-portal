@@ -12,7 +12,7 @@ import { useMutation } from "@tanstack/react-query";
 import { doRegister } from "../../@apis/auth";
 
 const Register = () => {
-  const { register, handleSubmit } = useForm();
+  const { register, handleSubmit,reset} = useForm();
 
   const userRegistered = useMutation({
     mutationFn: doRegister,
@@ -21,15 +21,18 @@ const Register = () => {
   const onSubmit = (data) => {
     try {
       userRegistered.mutate({ data });
+      
       // Handle success, maybe redirect or show a success message
     } catch (error) {
       // Handle error
       console.error(error);
     }
+    reset();
   };
 
   return (
     <>
+     {userRegistered.isSuccess ? <h2 style={{color:"red"}}>Todo added!</h2> : null}
       <section className="authPage">
         <div className="container">
           <div className="header">
