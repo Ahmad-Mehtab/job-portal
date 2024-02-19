@@ -7,10 +7,13 @@ import toast from "react-hot-toast";
 import { useForm } from "react-hook-form";
 import { doLogin } from "../../@apis/auth";
 import { useMutation } from "@tanstack/react-query";
+import { userAuthorize } from "../../redux/user/userSlice";
+import { useDispatch } from "react-redux";
 
 const Login = () => {
   const {register,handleSubmit, reset} = useForm();
   const navigate =  useNavigate();
+  const dispatch = useDispatch()
   const userRegistered = useMutation({
     mutationFn: doLogin,
     // onSuccess: (data,error) => {
@@ -19,12 +22,11 @@ const Login = () => {
   });
 
   const submitHandle = async(data) => {
-    console.log('data: ', data);
     try {
       const res = await userRegistered.mutateAsync({data})
-      console.log('res: ', res);
       toast.success(res.data.message);
       navigate("/");
+      dispatch(userAuthorize(res.data.user));
     } catch (error) {
       toast.error(error.message);
     } finally {

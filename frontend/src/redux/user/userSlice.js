@@ -17,7 +17,7 @@ const userSlice = createSlice({
 });
 
 export const {
-  signInSuccess,
+  userAuthorize,
 } = userSlice.actions;
 
 export default userSlice.reducer;
