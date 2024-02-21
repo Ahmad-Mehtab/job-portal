@@ -13,12 +13,11 @@ function classNames(...classes) {
 export default function Navbar() {
   const dispatch = useDispatch();
   const { isAuthorized, currentUser } = useSelector((state) => state.user);
-  console.log('currentUser: ', currentUser.role);
  
   const navigation = [
     { name: "Home", to: "/", current: true },
     { name: "All Jobs", to: "/job/getall", current: false },
-    { name: currentUser.role === "Employer" ? "Candidate Application" : "Job Seeker", to: "/application", current: false },
+    { name: currentUser?.role === "Employer" ? "Candidate Application" : "Job Seeker", to: "/application", current: false },
     { name: "Post new job", to: "/job/post", current: false },
     { name: "View your job", to: "/job/me", current: false },
   ];
