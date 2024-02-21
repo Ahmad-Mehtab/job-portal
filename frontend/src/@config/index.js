@@ -13,7 +13,7 @@ export const PrivateAxios = axios.create({
     baseURL: CONSTANTS.BASEURL
 })
 
-console.log(PrivateAxios);
+
 
 // jwt token
 PrivateAxios.interceptors.request.use(function (config) {

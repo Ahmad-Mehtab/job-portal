@@ -72,6 +72,12 @@ p {
   }
 }
 
+html, body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+}
+
 .authPage {
   display: flex;
   min-width: 1500px;
