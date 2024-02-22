@@ -9,9 +9,10 @@ import { doLogin } from "../../@apis/auth";
 import { useMutation } from "@tanstack/react-query";
 import { userAuthorize } from "../../redux/user/userSlice";
 import { useDispatch } from "react-redux";
+import { DevTool } from "@hookform/devtools";
 
 const Login = () => {
-  const {register,handleSubmit, reset} = useForm();
+  const {register,handleSubmit, reset, control} = useForm();
   const navigate =  useNavigate();
   const dispatch = useDispatch()
   const userRegistered = useMutation({
@@ -83,6 +84,7 @@ const Login = () => {
             </button>
             <Link to={"/register"}>Register Now</Link>
           </form>
+          <DevTool control={control} />
         </div>
         <div className="banner">
           <img src="/login.png" alt="login" />

@@ -9,11 +9,13 @@ const validationSchema = yup.object().shape({
   city: yup.string().required("City is required"),
   location: yup.string().required("Location is required"),
   salarytype: yup.string().required("Salary type is required"),
-//   fixedSalary: yup
+  fixedSalary:yup.number().required("Fixed salary is required"),
+  salaryFrom:yup.number().required("From salary is required"),
+  salaryTo:yup.number().required("To salary is required"),
 //     .number()
 //     .when("salarytype", {
 //       is: "fixed",
-//       then: yup.number().required("Fixed salary is required"),
+//       then: 
 //     }),
 //   salaryFrom: yup
 //     .number()

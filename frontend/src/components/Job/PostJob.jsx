@@ -3,11 +3,15 @@ import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
 import { yupResolver } from "@hookform/resolvers/yup";
 import validationSchema from "../../@validationSchema/SchemaPostJob";
+import { DevTool } from "@hookform/devtools";
+import { useMutation } from "@tanstack/react-query";
+import { doPostJob } from "../../@apis/post";
 
 function PostJob() {
   const {
     register,
     handleSubmit,
+    control,
     reset,
     getValues,
     watch,
@@ -15,42 +19,43 @@ function PostJob() {
   } = useForm({
     resolver: yupResolver(validationSchema), // Use the validation schema with React Hook Form
   });
+  const postJob = useMutation({
+    mutationFn: doPostJob,
+    // onSuccess: (data,error) => {
+    // toast.success(data.data.message)
+    // },
+  });
+
   const values = getValues();
   const salarytype = watch("salarytype");
-  // Trigger effect when form data changes
-
-  //
-  // const validateSalaryTo = (value) => {
-  //   console.log("dd");
-  //   // const salaryFromValue = parseInt(getValues("salaryFrom"));
-  //   // const salaryToValue = parseInt(value);
-  //   // if (isNaN(salaryFromValue) || isNaN(salaryToValue)) {
-  //   //   return "Salary To must be a valid number";
-  //   // }
-  //   // if (salaryToValue <= salaryFromValue) {
-  //   //   return "Salary To must be greater than Salary From";
-  //   // }
-  //   // return true;
-  // };
 
   var PostJob = null;
-  const onPost = (data) => {
-    const { salarytype, salaryTo, salaryFrom, ...PostJob } = data;
-  
-    if (salarytype === "default") {
-      toast.error("Please select salary type");
-      return;
-    } else if (salarytype === "fixed") {
-      // Handle fixed salary case
-    } else if (salaryTo < salaryFrom) {
-      toast.error("Salary To must be greater than salaryFrom");
-      console.log("From greatr");
-      // return false;  
-    } else {
-      // Clear the error message when the condition is resolved
-      toast.dismiss(); // This will dismiss any currently displayed toast
+  const onPost = async(data) => {
+    let postData = { ...data }; // Copy all fields from data
+    if (data.salarytype === "fixed") {
+      // If fixed salary is selected, remove salaryFrom and salaryTo from postData
+      const { salaryFrom, salaryTo, salarytype, ...rest } = postData;
+      postData = rest;
+    } else if (data.salarytype === "range") {
+      // If range salary is selected, remove fixedSalary from postData
+      const { fixedSalary, salarytype, ...rest } = postData;
+      postData = rest;
+    }
+    try {
+      const res = await postJob.mutateAsync({ postData });
+      toast.success(res.data.message);
+      // navigate("/");
+    } catch (error) {
+      toast.error(error.message);
+    } finally {
+      console.log("done");
+      reset();
     }
   };
+  // if (data.salaryTo < data.salaryFrom) {
+  //   toast.error("salary From must be less than To");
+  //   return false;
+  // }
 
   return (
     <div className="max-w-5xl mx-auto h-[85vh] p-10">
@@ -127,7 +132,7 @@ function PostJob() {
                   className="block w-full rounded-md border-0 p-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-md sm:leading-6"
                   placeholder="Enter your description here..."
                 />
-                  {errors.description && (
+                {errors.description && (
                   <p className="text-red-500 hover:text-red-700 text-[17px] mt-3">
                     {errors.description.message}
                   </p>
@@ -175,7 +180,7 @@ function PostJob() {
                   placeholder="city"
                   className="block w-full rounded-md border-0 p-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-md sm:leading-6"
                 />
-                  {errors.city && (
+                {errors.city && (
                   <p className="text-red-500 hover:text-red-700 text-[17px] mt-3">
                     {errors.city.message}
                   </p>
@@ -199,7 +204,7 @@ function PostJob() {
                   autoComplete="address-level1"
                   className="block w-full rounded-md border-0 p-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-md sm:leading-6"
                 />
-                  {errors.location && (
+                {errors.location && (
                   <p className="text-red-500 hover:text-red-700 text-[17px] mt-3">
                     {errors.location.message}
                   </p>
@@ -222,21 +227,19 @@ function PostJob() {
                   autoComplete="country-name"
                   className="block w-full rounded-md py-[8px] border-0 p-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:max-w-xs sm:text-md sm:leading-6"
                 >
-                  <option value={"default"}>Default</option>
+                  <option value="">Default</option>
                   <option value={"fixed"}>Fixed</option>
                   <option value={"range"}>Range</option>
                 </select>
-                {values.salarytype === "default" ? (
+                {salarytype == "" && (
                   <p className="text-red-500 hover:text-red-700 text-[17px] mt-3">
-                    Please select salary
+                    Please select a Salary Type
                   </p>
-                ) : (
-                  ""
                 )}
               </div>
             </div>
             <div className="sm:col-span-4">
-              {values.salarytype === "fixed" ? (
+              {salarytype === "fixed" ? (
                 <div className="mt-2">
                   <label
                     htmlFor="fixedSalary"
@@ -258,7 +261,7 @@ function PostJob() {
                     </p>
                   )}
                 </div>
-              ) : values.salarytype === "range" ? (
+              ) : salarytype === "range" ? (
                 <div className="" style={{ display: "flex", gap: "10px" }}>
                   <div style={{ flex: "1" }}>
                     <label
@@ -275,6 +278,11 @@ function PostJob() {
                       autoComplete="off"
                       className="block w-full rounded-md border-0 p-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-md sm:leading-6"
                     />
+                    {errors.salaryFrom && (
+                      <p className="text-red-500 hover:text-red-700 text-[17px] mt-3">
+                        Salary From Required
+                      </p>
+                    )}
                   </div>
                   <div style={{ flex: "1" }}>
                     <label
@@ -291,7 +299,11 @@ function PostJob() {
                       autoComplete="off"
                       className="block w-full rounded-md border-0 p-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-md sm:leading-6"
                     />
-                    {errors.salaryTo && <p>{errors.salaryTo.message}</p>}
+                    {errors.salaryTo && (
+                      <p className="text-red-500 hover:text-red-700 text-[17px] mt-3">
+                        Salary To Required
+                      </p>
+                    )}
                   </div>
                 </div>
               ) : null}
@@ -308,6 +320,7 @@ function PostJob() {
             Submit
           </button>
         </form>
+        <DevTool control={control} />
       </div>
     </div>
   );
