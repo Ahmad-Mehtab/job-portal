@@ -16,8 +16,7 @@ function PostJob() {
     resolver: yupResolver(validationSchema), // Use the validation schema with React Hook Form
   });
   const values = getValues();
-  const salaryTo = watch("salaryTo");
-  const salaryFrom = watch("salaryFrom");
+  const salarytype = watch("salarytype");
   // Trigger effect when form data changes
 
   //
@@ -36,7 +35,7 @@ function PostJob() {
 
   var PostJob = null;
   const onPost = (data) => {
-    const { salarytype, ...PostJob } = data;
+    const { salarytype, salaryTo, salaryFrom, ...PostJob } = data;
   
     if (salarytype === "default") {
       toast.error("Please select salary type");
@@ -45,7 +44,7 @@ function PostJob() {
       // Handle fixed salary case
     } else if (salaryTo < salaryFrom) {
       toast.error("Salary To must be greater than salaryFrom");
-   
+      console.log("From greatr");
       // return false;  
     } else {
       // Clear the error message when the condition is resolved
