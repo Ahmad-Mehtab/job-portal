@@ -1,10 +1,10 @@
 import { Fragment } from "react";
 import { Disclosure, Menu, Transition } from "@headlessui/react";
 import { Bars3Icon, BellIcon, XMarkIcon } from "@heroicons/react/24/outline";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-
-
+import nookies from "nookies";
+import toast from "react-hot-toast";
 
 function classNames(...classes) {
   return classes.filter(Boolean).join(" ");
@@ -13,14 +13,26 @@ function classNames(...classes) {
 export default function Navbar() {
   const dispatch = useDispatch();
   const { isAuthorized, currentUser } = useSelector((state) => state.user);
- 
+  const navigate = useNavigate();
+
   const navigation = [
     { name: "Home", to: "/", current: true },
     { name: "All Jobs", to: "/job/getall", current: false },
-    { name: currentUser?.role === "Employer" ? "Candidate Application" : "Job Seeker", to: "/application", current: false },
-    { name: "Post new job", to: "/job/post", current: false },
+    {
+      name: currentUser?.role === "Employer" ? "Candidate Application" : "Job Seeker",
+      to: "/application",
+      current: false,
+    },
+    currentUser?.role === "Employer" ? { name: "Post new job", to: "/job/post", current: false } : null,
     { name: "View your job", to: "/job/me", current: false },
-  ];
+  ].filter(item => item !== null);
+  const handleLogout = (e) => {
+    e.preventDefault();
+    nookies.destroy(null, "token", { path: "/" });
+    toast.success("User logged out Successfully");
+    navigate("/login");
+  };
+
   return (
     <Disclosure
       as="nav"
@@ -73,6 +85,7 @@ export default function Navbar() {
                   <Link
                     to="#"
                     className="flex items-center justify-center px-4 text-sm font-medium leading-6  whitespace-no-wrap bg-white border-2 border-transparent rounded-full shadow-sm hover:bg-transparent hover:text-white hover:border-white focus:outline-none"
+                    onClick={handleLogout}
                   >
                     LOG OUT
                   </Link>

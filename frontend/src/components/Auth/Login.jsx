@@ -10,6 +10,7 @@ import { useMutation } from "@tanstack/react-query";
 import { userAuthorize } from "../../redux/user/userSlice";
 import { useDispatch } from "react-redux";
 import { DevTool } from "@hookform/devtools";
+import nookies from "nookies";
 
 const Login = () => {
   const {register,handleSubmit, reset, control} = useForm();
@@ -24,16 +25,19 @@ const Login = () => {
 
   const submitHandle = async(data) => {
     try {
-      const res = await userRegistered.mutateAsync({data})
-      toast.success(res.data.message);
-      navigate("/");
-      dispatch(userAuthorize(res.data.user));
+      const res = await userRegistered.mutateAsync({data});
+      if(res.data.success) {
+        toast.success(res.data.message);
+        nookies.set(null, 'token', res.data.token, {path: '/'});
+        dispatch(userAuthorize(res.data.user));
+        navigate("/");
+      }
     } catch (error) {
       toast.error(error.message);
     } finally {
       console.log('done')
+      reset();
     }
-    // reset();
   };
   return (
     <>

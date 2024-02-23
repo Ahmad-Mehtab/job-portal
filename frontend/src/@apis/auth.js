@@ -10,7 +10,7 @@ export const doRegister = ({ data }) => {
 }
 
 export const doLogin = ({data}) =>{
-    return PrivateAxios({
+    return PublicAxios({
         method:'POST',
         url:"/api/user/login",
         data:data,

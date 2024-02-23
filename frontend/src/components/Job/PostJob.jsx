@@ -33,7 +33,6 @@ function PostJob() {
   const onPost = async(data) => {
     let postData = { ...data }; // Copy all fields from data
     if (data.salarytype === "fixed") {
-      // If fixed salary is selected, remove salaryFrom and salaryTo from postData
       const { salaryFrom, salaryTo, salarytype, ...rest } = postData;
       postData = rest;
     } else if (data.salarytype === "range") {
