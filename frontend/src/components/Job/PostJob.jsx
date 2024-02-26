@@ -29,7 +29,7 @@ function PostJob() {
   const values = getValues();
   const salarytype = watch("salarytype");
 
-  var PostJob = null;
+  // var PostJob = null;
   const onPost = async(data) => {
     let postData = { ...data }; // Copy all fields from data
     if (data.salarytype === "fixed") {
