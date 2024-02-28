@@ -1,9 +1,13 @@
-import React from 'react'
+import React from "react";
+import { Button } from "primereact/button";
+
 
 function MyJobs() {
   return (
-    <div>MyJobs</div>
-  )
+    <div className="card flex justify-content-center">
+      <Button label="Check" icon="pi pi-check" />
+    </div>
+  );
 }
 
-export default MyJobs
+export default MyJobs;
