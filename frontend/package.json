@@ -20,7 +20,7 @@
     "axios": "^1.6.5",
     "nookies": "^2.5.2",
     "primeicons": "^6.0.1",
-    "primereact": "^10.5.1",
+    "primereact": "^9.6.3",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-hook-form": "^7.50.1",

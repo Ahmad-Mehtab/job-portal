@@ -7,7 +7,11 @@ import { persistor, store } from "./redux/store.js";
 import { Provider } from "react-redux";
 import { PersistGate } from "redux-persist/integration/react";
 import "./index.css";
-import { PrimeReactProvider } from 'primereact/api';
+
+import "primereact/resources/themes/lara-light-indigo/theme.css"; //theme
+import "primereact/resources/primereact.min.css"; //core                                    
+import 'primeicons/primeicons.css';
+        
 // const queryClient = new QueryClient({
 //   defaultOptions: {
 //     queries: {
@@ -34,9 +38,7 @@ ReactDOM.createRoot(document.getElementById("root")).render(
   <QueryClientProvider  client={queryClient}>
     <Provider store={store}>
       <PersistGate loading={null} persistor={persistor}>
-      <PrimeReactProvider>
         <App />
-        </PrimeReactProvider>
       </PersistGate>
     </Provider>
   </QueryClientProvider>
