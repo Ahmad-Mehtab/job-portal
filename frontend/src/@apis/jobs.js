@@ -41,3 +41,19 @@ export const getJobList = async() => {
         throw new Error("Failed to fetch job details");
     }
 };
+
+export const doDeleteJob = async(id) => {
+    
+    try {
+        const response = await PrivateAxios({
+            method: 'DELETE',
+            url: `/api/job/delete/${id}`,
+            withCredentials: true,
+            headers: { "Content-Type": "application/json" }
+        });
+        // console.log("-------------",response.data.myJobs);
+        return response.data;
+    } catch (error) {
+        throw new Error("Failed to fetch job details");
+    }
+};

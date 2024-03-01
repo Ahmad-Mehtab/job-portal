@@ -6,8 +6,10 @@ import validationSchema from "../../@validationSchema/SchemaPostJob";
 import { DevTool } from "@hookform/devtools";
 import { useMutation } from "@tanstack/react-query";
 import { doPostJob } from "../../@apis/post";
+import { useNavigate } from "react-router-dom";
 
 function PostJob() {
+  const navigate = useNavigate()
   const {
     register,
     handleSubmit,
@@ -43,7 +45,7 @@ function PostJob() {
     try {
       const res = await postJob.mutateAsync({ postData });
       toast.success(res.data.message);
-      // navigate("/");
+      navigate("/job/me");
     } catch (error) {
       toast.error(error.message);
     } finally {

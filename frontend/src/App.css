@@ -4,12 +4,9 @@
   margin: 0;
   padding: 0;
   box-sizing: border-box;
-  overflow-x: hidden;
   font-family: "Roboto", sans-serif;
 }
-::-webkit-scrollbar {
-  display: none;
-}
+
 h1 {
   font-size: 4rem;
 }
@@ -1357,3 +1354,6 @@ nav .hamburger {
 }
 
 
+.table-wrapper {
+  overflow-x: auto;
+}

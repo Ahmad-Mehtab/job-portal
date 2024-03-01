@@ -11,6 +11,7 @@ import "./index.css";
 import "primereact/resources/themes/lara-light-indigo/theme.css"; //theme
 import "primereact/resources/primereact.min.css"; //core                                    
 import 'primeicons/primeicons.css';
+
         
 // const queryClient = new QueryClient({
 //   defaultOptions: {
