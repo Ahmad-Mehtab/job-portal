@@ -3,16 +3,39 @@ import { Button } from "primereact/button";
 import { DataTable } from "primereact/datatable";
 import { Column } from "primereact/column";
 import { Dialog } from "primereact/dialog";
+import { DevTool } from "@hookform/devtools";
 import { useMutation, useQuery } from "@tanstack/react-query";
-import { doDeleteJob, getJobList } from "../../@apis/jobs";
+import { doDeleteJob, doPostUpdate, getJobList } from "../../@apis/jobs";
 import toast from "react-hot-toast";
+import { useForm } from "react-hook-form";
 
 // import { ProductService } from './ProductService';
 
 function MyJobs() {
-  // const [customers, setCustomers] = useState([]);
+  const [selectedJob, setSelectedJob] = useState(null); 
   const [visible, setVisible] = useState(false);
 
+
+  const {
+    register,
+    handleSubmit,
+    setValue,
+    control,
+    watch,
+    formState: { errors },
+  } = useForm();
+
+  const salarytype = watch("salarytype");
+
+
+  const postedJobUpdate = useMutation({
+    mutationFn: doPostUpdate,
+    // onSuccess: (data,error) => {
+    // toast.success(data.data.message)
+    // },
+  });
+
+  // style
   const truncateStyle = {
     overflow: "hidden",
     whiteSpace: "nowrap",
@@ -36,6 +59,38 @@ function MyJobs() {
       refetch();
     },
   });
+
+  const handleEdit = (rowData) => {
+    setValue("id", rowData._id); // Update title field value
+    setValue("title", rowData.title); // Update title field value
+    setValue("category", rowData.category); // Update category field value
+    setValue("description", rowData.description); // Update description field value
+    setValue("country", rowData.country); // Update country field value
+    setValue("city", rowData.city); // Update city field value
+    setValue("location", rowData.location); // Update location field value
+    setValue("salaryTo", rowData.salaryTo);
+    setValue("salaryFrom", rowData.salaryFrom);
+    setValue("fixedSalary", rowData.fixedSalary);
+    setVisible(true); // Show the dialog
+    setSelectedJob(rowData);
+  };
+
+  const handlePostUpdate = async(postData) => {
+      try {
+      const res = await postedJobUpdate.mutateAsync({postData});
+      toast.success(res.message);
+      getJobList();
+      refetch();
+      // navigate("/job/me");
+    } catch (error) {
+      toast.error(error.message);
+    } finally {
+      console.log("done");
+      setVisible(false);
+      
+    }
+  }
+
   useEffect(() => {
     // Trigger data refetch when the component mounts
     // getJobList();
@@ -77,18 +132,8 @@ function MyJobs() {
   const actionTemplate = (rowData) => {
     return (
       <div className="flex gap-2">
-        <button
-          className="bg-red-700 py-1 rounded-sm  px-3 text-white"
-          onClick={() => setVisible(true)}
-        >
-          edit
-        </button>
-        <button
-          className="bg-yellow-600  rounded-sm py-1 px-3 text-white"
-          onClick={() => deleteJob.mutateAsync(rowData._id)}
-        >
-          Delete
-        </button>
+      <Button icon="pi pi-pencil" className="p-button-rounded p-button-success p-mr-2"  onClick={() => {setVisible(true); handleEdit(rowData)}}/>
+      <Button icon="pi pi-trash" className="p-button-rounded p-button-danger" onClick={() => deleteJob.mutateAsync(rowData._id)} />
       </div>
     );
   };
@@ -159,7 +204,7 @@ function MyJobs() {
           Edit job
         </h1>
         <div className="border border-gray-900/10 rounded-md shadow-lg md:p-5 p-2">
-          <form>
+          <form onSubmit={handleSubmit(handlePostUpdate)}>
             <div className="grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
               <div className="sm:col-span-3">
                 <label
@@ -175,7 +220,7 @@ function MyJobs() {
                     name="title"
                     id="title"
                     placeholder="job title"
-                    // {...register("title")}
+                    {...register("title")}
                     autoComplete="given-name"
                     className="block w-full rounded-md border-0 p-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-md sm:leading-6"
                   />
@@ -189,7 +234,7 @@ function MyJobs() {
 
               <div className="sm:col-span-3">
                 <label
-                  htmlFor="country"
+                  htmlFor="category"
                   className="block text-md font-medium leading-6 text-gray-900"
                 >
                   Select Category
@@ -197,9 +242,9 @@ function MyJobs() {
                 <div className="mt-2">
                   <select
                     id="category"
-                    // {...register("category")}
+                    {...register("category")}
                     name="category"
-                    autoComplete="country-name"
+                    autoComplete="category"
                     className="block w-full py-[8px] rounded-md border-0 p-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-md sm:leading-6"
                   >
                     <option value="">Default</option>
@@ -216,7 +261,7 @@ function MyJobs() {
 
               <div className="sm:col-span-6">
                 <label
-                  htmlFor="country"
+                  htmlFor="description"
                   className="block text-md font-medium leading-6 text-gray-900"
                 >
                   Description
@@ -224,7 +269,7 @@ function MyJobs() {
                 <div className="mt-2">
                   <textarea
                     id="description"
-                    // {...register("description", { required: true })}
+                    {...register("description", { required: true })}
                     className="block w-full rounded-md border-0 p-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-md sm:leading-6"
                     placeholder="Enter your description here..."
                   />
@@ -245,6 +290,7 @@ function MyJobs() {
                 <div className="mt-2">
                   <input
                     type="text"
+                    {...register("country")}
                     placeholder="country"
                     name="country"
                     id="country"
@@ -270,7 +316,7 @@ function MyJobs() {
                     id="city"
                     name="city"
                     type="text"
-                    // {...register("city")}
+                    {...register("city")}
                     autoComplete="city"
                     placeholder="city"
                     className="block w-full rounded-md border-0 p-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-md sm:leading-6"
@@ -295,7 +341,7 @@ function MyJobs() {
                     name="location"
                     id="location"
                     placeholder="location"
-                    // {...register("location")}
+                    {...register("location")}
                     autoComplete="address-level1"
                     className="block w-full rounded-md border-0 p-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-md sm:leading-6"
                   />
@@ -318,8 +364,8 @@ function MyJobs() {
                   <select
                     id="salarytype"
                     name="salarytype"
-                    // {...register("salarytype")}
-                    autoComplete="country-name"
+                    {...register("salarytype")}
+                    autoComplete="salarytype"
                     className="block w-full rounded-md py-[8px] border-0 p-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:max-w-xs sm:text-md sm:leading-6"
                   >
                     <option value="">Default</option>
@@ -333,7 +379,7 @@ function MyJobs() {
                 )} */}
                 </div>
               </div>
-              {/* <div className="sm:col-span-4">
+              <div className="sm:col-span-4">
               {salarytype === "fixed" ? (
                 <div className="mt-2">
                   <label
@@ -350,11 +396,11 @@ function MyJobs() {
                     autoComplete="off"
                     className="block w-full rounded-md border-0 p-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-md sm:leading-6"
                   />
-                  {errors.fixedSalary && (
+                  {/* {errors.fixedSalary && (
                     <p className="text-red-500 hover:text-red-700 text-[17px] mt-3">
                       {errors.fixedSalary.message}
                     </p>
-                  )}
+                  )} */}
                 </div>
               ) : salarytype === "range" ? (
                 <div className="" style={{ display: "flex", gap: "10px" }}>
@@ -373,11 +419,11 @@ function MyJobs() {
                       autoComplete="off"
                       className="block w-full rounded-md border-0 p-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-md sm:leading-6"
                     />
-                    {errors.salaryFrom && (
+                    {/* {errors.salaryFrom && (
                       <p className="text-red-500 hover:text-red-700 text-[17px] mt-3">
                         Salary From Required
                       </p>
-                    )}
+                    )} */}
                   </div>
                   <div style={{ flex: "1" }}>
                     <label
@@ -394,15 +440,15 @@ function MyJobs() {
                       autoComplete="off"
                       className="block w-full rounded-md border-0 p-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-md sm:leading-6"
                     />
-                    {errors.salaryTo && (
+                    {/* {errors.salaryTo && (
                       <p className="text-red-500 hover:text-red-700 text-[17px] mt-3">
                         Salary To Required
                       </p>
-                    )}
+                    )} */}
                   </div>
                 </div>
               ) : null}
-            </div> */}
+            </div>
             </div>
             <button
               type="submit"
@@ -413,6 +459,7 @@ function MyJobs() {
           </form>
         </div>
       </Dialog>
+      <DevTool control={control} />
     </div>
   );
 }

@@ -1,14 +1,17 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { getAllJobs } from "../../@apis/jobs";
 import { useQuery } from "@tanstack/react-query";
 
 const Jobs = () => {
-  const { isPending, data:jobs, error } = useQuery({
+  const { isPending, data:jobs, error, refetch } = useQuery({
     queryKey: ['jobs'],
     queryFn: getAllJobs,
   });
 
+  useEffect(() => {
+    refetch();
+  }, []);
   if (isPending) return <div
   id="loading-overlay"
   className="fixed inset-0 z-50 flex items-center justify-center bg-gray-900 bg-opacity-60"
@@ -40,9 +43,9 @@ const Jobs = () => {
   
   const allJobs = jobs?.data?.jobs || [];
   return (
-    <section className="jobs page flex items-start gap-5 justify-center">
+    <section className="jobs page flex content-start gap-5 justify-center flex-wrap">
       {allJobs && allJobs?.map((jobData) => (
-          <div key={jobData._id} className=" relative flex flex-col mt-6 text-gray-700 bg-white shadow-md bg-clip-border rounded-xl w-96">
+          <div key={jobData._id} className=" relative flex h-fit flex-col mt-6 text-gray-700 bg-white shadow-md bg-clip-border rounded-xl w-96">
             <div className="p-6">
               <h5 className="flex items-end justify-between mb-4 font-sans text-xl antialiased font-semibold leading-snug tracking-normal text-blue-gray-900">
                 {jobData.title}

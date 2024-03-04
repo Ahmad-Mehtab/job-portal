@@ -1357,3 +1357,9 @@ nav .hamburger {
 .table-wrapper {
   overflow-x: auto;
 }
+.p-button.p-button-icon-only {
+  width: 2.2rem !important;
+}
+.p-button.p-button-icon-only {
+  height: 2.2rem !important;
+}

@@ -130,7 +130,7 @@ const JobDetails = () => {
             </div>
             {currentUser?.role === "Job Seeker" && (
               <Link
-                to={"#"}
+                to={`/application/${JobDetail._id}`}
                 className="bg-teal-500 hover:bg-teal-600 text-white text-center block rounded-full py-2"
               >
                 Apply for this job

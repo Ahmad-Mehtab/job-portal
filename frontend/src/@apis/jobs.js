@@ -1,7 +1,7 @@
 import { PrivateAxios, PublicAxios } from "../@config";
 import MyJobs from './../components/Job/MyJobs';
 
-export const getAllJobs = async() => {
+export const getAllJobs = async () => {
     return await PublicAxios({
         method: 'GET',
         url: "/api/job/getall",
@@ -26,7 +26,7 @@ export const getSingleJob = async (id) => {
     }
 };
 
-export const getJobList = async() => {
+export const getJobList = async () => {
 
     try {
         const response = await PrivateAxios({
@@ -42,12 +42,38 @@ export const getJobList = async() => {
     }
 };
 
-export const doDeleteJob = async(id) => {
-    
+export const doDeleteJob = async (id) => {
+
     try {
         const response = await PrivateAxios({
             method: 'DELETE',
             url: `/api/job/delete/${id}`,
+            withCredentials: true,
+            headers: { "Content-Type": "application/json" }
+        });
+        // console.log("-------------",response.data.myJobs);
+        return response.data;
+    } catch (error) {
+        throw new Error("Failed to fetch job details");
+    }
+};
+
+export const doPostUpdate = async (data) => {
+    const {postData}= data;
+    let restUpdateData;
+    if (!postData.fixedSalary) {
+        const { salarytype, id, fixedSalary, ...rest } = postData;
+        restUpdateData = rest;
+    } else {
+        const { salarytype, id, salaryFrom, salaryTo, ...rest } = postData;
+        restUpdateData = rest;
+    }
+    // console.log(restUpdateData);
+    try {
+        const response = await PrivateAxios({
+            method: 'PUT',
+            url: `/api/job/update/${postData.id}`,
+            data: restUpdateData,
             withCredentials: true,
             headers: { "Content-Type": "application/json" }
         });
