@@ -5,6 +5,7 @@ import { Job } from "../models/jobSchema.js";
 import cloudinary from "cloudinary";
 
 export const postApplication = catchAsyncErrors(async (req, res, next) => {
+  console.log('******',req.body);
   const { role } = req.user;
   if (role === "Employer") {
     return next(
