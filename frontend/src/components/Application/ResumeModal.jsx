@@ -1,9 +1,16 @@
-import React from 'react'
+import React from "react";
 
-const ResumeModal = () => {
+const ResumeModal = ({resumeImageUrl, closeModal }) => {
   return (
-    <div>ResumeModal</div>
-  )
-}
+    <div className="resume-modal">
+      <div className="modal-content">
+        <span className="close" onClick={closeModal}>
+          &times;
+        </span>
+        <img src={resumeImageUrl} alt="resume" />
+      </div>
+    </div>
+  );
+};
 
-export default ResumeModal
+export default ResumeModal;

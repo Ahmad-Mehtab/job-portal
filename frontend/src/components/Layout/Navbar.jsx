@@ -19,13 +19,20 @@ export default function Navbar() {
     { name: "Home", to: "/", current: true },
     { name: "All Jobs", to: "/job/getall", current: false },
     {
-      name: currentUser?.role === "Employer" ? "Candidate Application" : "Job Seeker",
-      to: "/application",
+      name:
+        currentUser?.role === "Employer"
+          ? "Candidate Application"
+          : "Job Seeker",
+      to: "/applications/me",
       current: false,
     },
-    currentUser?.role === "Employer" ? { name: "Post new job", to: "/job/post", current: false } : null,
+    currentUser?.role === "Employer"
+      ? { name: "Post new job", to: "/job/post", current: false }
+      : null,
     { name: "View your job", to: "/job/me", current: false },
-  ].filter(item => item !== null);
+  ].filter((item) => item !== null);
+
+  
   const handleLogout = (e) => {
     e.preventDefault();
     nookies.destroy(null, "token", { path: "/" });
