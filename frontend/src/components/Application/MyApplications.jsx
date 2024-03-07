@@ -13,7 +13,6 @@ function MyApplications() {
   const { isAuthorized, currentUser } = useSelector((state) => state.user);
 const [modalOpen, setModalOpen] = useState(false);
 const [resumeImageUrl, setResumeImageUrl] = useState(false);
-console.log('resumeImageUrl: ', resumeImageUrl);
   // console.log(currentUser.role === "Job Seeker");
   const { isPending, data, error, refetch } = useQuery({
     queryKey: ["myApplication"],
@@ -86,7 +85,7 @@ console.log('resumeImageUrl: ', resumeImageUrl);
           </div>
         ) : (
           <div className="container">
-            <h1>Applications From Job Seekers</h1>
+            <h1 className="text-3xl">Applications From Job Seekers</h1>
             {data?.applications.map((element) => (
               <EmployerCard element={element} key={element._id} />
             ))}
@@ -173,9 +172,9 @@ const EmployerCard = ({element}) => {
           />
         </div>
         <div className="btn_area">
-          <button onClick={() => deleteApplication.mutateAsync(element._id)}>
+          {/* <button onClick={() => deleteApplication.mutateAsync(element._id)}>
             Delete Application
-          </button>
+          </button> */}
         </div>
       </div>
     </>

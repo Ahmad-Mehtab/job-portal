@@ -5,6 +5,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import nookies from "nookies";
 import toast from "react-hot-toast";
+import { logOut } from "../../redux/user/userSlice";
 
 function classNames(...classes) {
   return classes.filter(Boolean).join(" ");
@@ -36,6 +37,7 @@ export default function Navbar() {
   const handleLogout = (e) => {
     e.preventDefault();
     nookies.destroy(null, "token", { path: "/" });
+    dispatch(logOut())
     toast.success("User logged out Successfully");
     navigate("/login");
   };
@@ -43,7 +45,7 @@ export default function Navbar() {
   return (
     <Disclosure
       as="nav"
-      className={isAuthorized ? "navbarShow bg-gray-800" : "navbarHide"}
+      className={currentUser ? "navbarShow bg-gray-800" : "navbarHide"}
     >
       {({ open }) => (
         <>
